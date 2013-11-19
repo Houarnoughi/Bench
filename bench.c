@@ -22,23 +22,28 @@ int dbConnect (const char *dbName)
   
   rc = sqlite3_open (dbName, &db); // Try to open database
   
-    if (rc = SQLITE_OK )
+    if (rc == SQLITE_OK)
       {
         printf ("Successful result: database opened \n");
-	return 0;
+        sqlite3_close(db);
+		return 0;
       }
-    else if (rc = SQLITE_ERROR)
+      else if (rc == SQLITE_ERROR)
       {
-        printf ("SQL error or missing database \n Do you want to create a new database? [Y/N]");
+        printf ("SQL error or missing database \n Do you want to create a new database? [Y/N]: ");
         scanf ("%c",&rsp);
         if ( rsp == 'Y' || rsp == 'y' )
-        {
-		dbfile = fopen ( dbName, "w");
-		printf ("Database file created with name: %s",dbName);
-		fclose (dbfile);	
-		}
-        sqlite3_close(db);
-	return 1;
+          {
+			dbfile = fopen ( dbName, "w");
+			printf ("Database file created with name: %s\n",dbName);
+			fclose (dbfile);
+			return 1;	
+		  }
+		  else
+		  {
+			printf ("File not created! exit\n");
+			return 0;
+		  }
       } 	
 }
 
@@ -58,7 +63,7 @@ int createTable (const char *dbName, const char *tabName)
  * NOTE: if this table don't exists, it will be created
  */
 
-int insertInto (const char *dbName, const char *tabName, int rowId, char *value)
+int insertInto (const char *dbName, const char *tabName, int rowId, char *recData)
 {
 	return 0;
 }
