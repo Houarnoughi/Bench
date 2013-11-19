@@ -2,13 +2,13 @@
 #	AUTHOR: Hamza OUARNOUGHI
 #	e-mail: h.ouarnoughi@gmail.com
 #
-CC=
+CC=gcc
 FLAGS=-c -Wall
 
 all: benchdb
 
 benchdb: bench.o
-	$(CC) main.c bench.o -l sqlite3 -o edbench
+	$(CC) main.c bench.o -l sqlite3 -o benchdb
 	
 bench.o: bench.c bench.h
 	$(CC) $(FLAGS) bench.c -l sqlite3 -o bench.o
