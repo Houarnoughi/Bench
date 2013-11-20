@@ -1,7 +1,17 @@
 AUTHOR: Hamza OUARNOUGHI
 e-mail: h.ouarnoughi@gmail.com
-let's GO!!! --->
-This is a simple README for my little project (the first with git)
-the goal of this project it's to developpe a micro benchmark for SQLite
-this benchmark contain simple queries (insert, select, update...)
+
+This is a simple application to test perfs in embedded database SQLite
+
+1) Cross compile:
+-----------------
+To cross compile bench you have to excecute the make command with a specified
+C compiler. Exemple for arm you have to use:
+'make CC=arm-gcc'
+
+2) Usage:
+---------
+./bench <database_file_target> <request_type> <number_of_record> <size_of_each_record>
+
+
 

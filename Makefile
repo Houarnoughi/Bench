@@ -4,16 +4,17 @@
 #	e-mail: h.ouarnoughi@gmail.com
 #_____________________________________________
 
-CC=gcc
-FLAGS=-c -g -Wall
-
+CC=
+CFLAGS=-c -g -Wall
+LDFLAGS=-l sqlite3 
 all: benchdb
 
 benchdb: bench.o
-	$(CC) main.c bench.o -l sqlite3 -o benchdb
+	$(CC) main.c bench.o $(LDFLAGS) -o benchdb
 	
 bench.o: bench.c bench.h
-	$(CC) $(FLAGS) bench.c -l sqlite3 -o bench.o
+	$(CC) $(CFLAGS) bench.c $(LDFLAGS) -o bench.o
 
+.PHONY: clean
 clean:
 	rm -rf *.o benchdb *.dat *.db

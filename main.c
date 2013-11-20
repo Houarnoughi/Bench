@@ -26,7 +26,6 @@ int main (int argc, char* argv[])
 	
 	if (strcmp(argv[2],"insert") == 0)
 	{
-		fprintf (stdout, "insert request of %d  size %d \n", nb_rec, sz_rec);
 		db = _db_connect (db_name);
 		_create_table (db, "table_1", sz_rec);
 		_insert_into (db, "table_1", nb_rec, sz_rec);
@@ -34,8 +33,7 @@ int main (int argc, char* argv[])
 	}
 	else if (strcmp(argv[2],"select") == 0)
 	{
-		fprintf (stdout, "select request of %d  size %d \n", nb_rec, sz_rec);
-		fprintf (stdout, "Number of records for each table: ");
+		fprintf (stdout, "Total number of records for this table: ");
 		fscanf (stdin, "%d",&_max);
 		db = _db_connect (db_name);
 		_create_table (db, "table_1", sz_rec);
@@ -46,7 +44,7 @@ int main (int argc, char* argv[])
 	else if (strcmp(argv[2],"update") == 0)
 	{
 		printf ("update request of %d  size %d \n", nb_rec, sz_rec);
-		fprintf (stdout, "Number of records for each table: ");
+		fprintf (stdout, "Total number of records for this table: ");
 		fscanf (stdin, "%d",&_max);
 		db = _db_connect (db_name);
 		_create_table (db, "table_1", sz_rec);
@@ -57,7 +55,7 @@ int main (int argc, char* argv[])
 	else if (strcmp(argv[2],"join") == 0)
 	{
 		printf ("join resquest of %d  size %d \n", nb_rec, sz_rec);
-		fprintf (stdout, "Number of records for each table: ");
+		fprintf (stdout, "Total number of records for each table: ");
 		fscanf (stdin, "%d",&_max);
 		db = _db_connect (db_name);
 		_create_table (db, "table_1", sz_rec);
