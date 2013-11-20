@@ -138,7 +138,7 @@ int _create_table (sqlite3 *db, const char *tabName, unsigned int tabSize)
  * NOTE: if this table does not exist, it will be created
  */
 
-int _insert_into (sqlite3* db, const char *tabName, unsigned int nbRec, unsigned int recSize)
+int _insert_into (sqlite3* db, const char *tab_name, unsigned int nb_rec, unsigned int rec_size)
 {
   char *zErrMsg = 0;
   int  rc = 0, i = 0 ;
@@ -150,11 +150,12 @@ int _insert_into (sqlite3* db, const char *tabName, unsigned int nbRec, unsigned
   fprintf (stdout,"Insert function begin ...! \n"); 
   fsql = fopen ("insert_sql.dat","a"); // Open file for sql requests
   fprintf (fsql,"BEGIN TRANSACTION; \n");
-  for (i = 0; i <= nbRec; i++)
+  fprintf (fsql,"DELETE FROM %s;",tab_name);
+  for (i = 0; i <= nb_rec; i++)
   {
-	valdata = rnd_gen (recSize);	// Generate a random string
-	sql = malloc (sizeof(char)*(100+recSize));
-	sprintf (sql, "INSERT INTO %s VALUES (%d,\'%s\');", tabName, i, valdata); // Prepare SQL insertion request 
+	valdata = rnd_gen (rec_size);	// Generate a random string
+	sql = malloc (sizeof(char)*(100+rec_size));
+	sprintf (sql, "INSERT INTO %s VALUES (%d,\'%s\');", tab_name, i, valdata); // Prepare SQL insertion request 
 	fprintf (fsql, "%s\n", sql); 	// save request in the file
 	gettimeofday (&start, NULL);	// begin time stamp
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);	// execute request
@@ -185,7 +186,7 @@ int _insert_into (sqlite3* db, const char *tabName, unsigned int nbRec, unsigned
  * it select record one by one (a for loop with the condition key == index)
  */
 
-int _select_from (sqlite3* db, const char *tabName, int nb_rec)
+int _select_from (sqlite3* db, const char *tab_name, unsigned int nb_rec)
 {
   char *zErrMsg = 0;
   int  rc = 0, i = 0 ;
@@ -201,7 +202,7 @@ int _select_from (sqlite3* db, const char *tabName, int nb_rec)
   for (i = 0; i <= nb_rec; i++)
   {
 	sql = malloc (sizeof(char)*(100));
-	sprintf (sql, "SELECT val FROM %s WHERE id = %d;", tabName, i); // Prepare SQL insertion request 
+	sprintf (sql, "SELECT val FROM %s WHERE id = %d;", tab_name, i); // Prepare SQL insertion request 
 	fprintf (fsql, "%s\n", sql);
 	gettimeofday (&start, NULL);
 	rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
@@ -226,12 +227,90 @@ int _select_from (sqlite3* db, const char *tabName, int nb_rec)
   return 0;
 }
 
-int _update_table (sqlite3* db, const char *tabName, int rowId, char *newValue)
+int _update_table (sqlite3* db, const char *tab_name, unsigned int nb_rec, unsigned int rec_size)
 {
-	return 0;
+  char *zErrMsg = 0;
+  int  rc = 0, i = 0 ;
+  char *sql = NULL, *valdata = NULL;
+  struct timeval start, end;
+  FILE *ft = NULL, *fsql = NULL; //files ft: time stamp fsql: sql requests 
+  unsigned long stamp = 0;
+
+  fprintf (stdout,"Update function begin ...! \n"); 
+  fsql = fopen ("update_sql.dat","a"); // Open file for sql requests
+  fprintf (fsql,"BEGIN TRANSACTION; \n");
+  for (i = 0; i <= nb_rec; i++)
+  {
+	valdata = rnd_gen (rec_size);	// Generate a random string
+	sql = malloc (sizeof(char)*(100+rec_size));
+	sprintf (sql, "UPDATE %s SET val =\'%s\' WHERE id = %d;", tab_name, valdata, i); // prepare SQL update request 
+	fprintf (fsql, "%s\n", sql); 	// save request in the file
+	gettimeofday (&start, NULL);	// begin time stamp
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);	// execute request
+	gettimeofday (&end, NULL);		// end time stamp
+	if( rc != SQLITE_OK )			// check the returned code
+	{
+		fprintf (stderr, "Update: SQL error: %s\n", zErrMsg);
+		sqlite3_free (zErrMsg);
+	}
+	else
+	{
+		stamp = ((end.tv_sec * 1000000) + end.tv_usec) - ((start.tv_sec * 1000000) + start.tv_usec); // calculate execution time
+		ft = fopen ("update_time.dat", "a");		// time stamping file		
+		fprintf (ft, "request execution time %d is %lu \n", i, stamp); //save time stamp
+		fclose (ft);   
+	}
+  }
+  fprintf (fsql,"END TRANSACTION; \n");
+  fclose (fsql);
+  free (sql);
+  fprintf (stdout,"Update function end ...! \n"); 
+  return 0;
 }
 
-int _join_nloop (sqlite3* db, const char *tabName_1, const char *tabName_2, const char *joinCond)
+/*
+ * _join_nloop function is a nested loop join between two tables 
+ * table_1 and table_2. It suppose that both table_1 and table_2 exits
+ * The join condition is specified by the number of records "nb_rec"
+ * "for i <= nb_rec" where id=i 
+ */
+
+int _join_nloop (sqlite3* db, const char *tab_name_1, const char *tab_name_2, unsigned int nb_rec)
 {
-	return 0;
+  char *zErrMsg = 0;
+  int  rc = 0;
+  char *sql = NULL;
+  const char* data = "Callback function called";
+  struct timeval start, end;
+  FILE *ft = NULL, *fsql = NULL; //files ft: time stamp fsql: sql requests 
+  unsigned long stamp = 0;
+
+  fprintf (stdout,"Join function begin...! \n");
+  fsql = fopen ("join_sql.dat","a"); // Open file for sql requests
+  fprintf (fsql,"BEGIN TRANSACTION; \n");
+  
+	sql = malloc (sizeof(char)*(100));
+	sprintf (sql, "SELECT %s.val FROM %s, %s WHERE %s.id = %s.id AND %s.id <= %d;",tab_name_2,tab_name_1,tab_name_2,tab_name_1,tab_name_2,tab_name_1,nb_rec); // Prepare SQL insertion request 
+	fprintf (fsql, "%s\n", sql);
+	gettimeofday (&start, NULL);
+	rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
+	gettimeofday (&end, NULL);
+	if( rc != SQLITE_OK )
+	{
+		fprintf (stderr, "Join: SQL error: %s\n", zErrMsg);
+		sqlite3_free (zErrMsg);
+	}
+	else
+	{
+		stamp = ((end.tv_sec * 1000000) + end.tv_usec) - ((start.tv_sec * 1000000) + start.tv_usec);
+		ft = fopen ("select_time.dat", "a");
+		fprintf (ft, "join request execution time is %lu \n", stamp);
+		fclose (ft);   
+	}
+ 
+  fprintf (fsql,"END TRANSACTION; \n");
+  fclose (fsql);
+  free (sql);
+  fprintf (stdout,"Join function end...! \n");
+  return 0;
 }
