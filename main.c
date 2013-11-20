@@ -10,32 +10,48 @@
 
 int main (int argc, char* argv[])
 {
+	int nb_rec = 0, sz_rec = 0, i = 0;
+	const char *db_name = NULL;
+	sqlite3* db = NULL;
+	
 	printf("Micro Benchmark for SQLite embedded database \n");
-	if ( argc <= 3 )
+	if ( argc <= 4 )
 	{
-		printf ("Usage: %s <request> <nb_rec> <size_rec> \n", argv[0]);
+		printf ("Usage: %s <db_file_target> <request> <nb_rec> <size_rec> \n", argv[0]);
 		return 1;
 	}
+	db_name = argv[1];
+	nb_rec = atoi (argv[3]);
+	sz_rec = atoi (argv[4]); 
 	
-	if (strcmp(argv[1],"insert") == 0)
+	if (strcmp(argv[2],"insert") == 0)
 	{
-		printf ("insert request \n");
+		fprintf (stdout, "insert request of %d  size %d \n", nb_rec, sz_rec);
+		db = _db_connect (db_name);
+		_create_table (db, "table_1", sz_rec);
+		_insert_into (db, "table_1", nb_rec, sz_rec);
+		sqlite3_close (db);
 	}
-	else if (strcmp(argv[1],"select") == 0)
+	else if (strcmp(argv[2],"select") == 0)
 	{
-		printf ("select request \n");
+		fprintf (stdout, "select request of %d  size %d \n", nb_rec, sz_rec);
+		db = _db_connect (db_name);
+		//_create_table (db, "table_1", sz_rec);
+		//_insert_into (db, "table_1", nb_rec, sz_rec);
+		_select_from (db, "table_1", nb_rec);
+		sqlite3_close (db);
 	}
-	else if (strcmp(argv[1],"update") == 0)
+	else if (strcmp(argv[2],"update") == 0)
 	{
-		printf ("update request \n");
+		printf ("update request of %d  size %d \n", nb_rec, sz_rec);
 	}
-	else if (strcmp(argv[1],"join") == 0)
+	else if (strcmp(argv[2],"join") == 0)
 	{
-		printf ("join resquest \n");
+		printf ("join resquest of %d  size %d \n", nb_rec, sz_rec);
 	}
 	else
 	{
-		printf ("Invalid request \n");
+		printf ("Invalid request of %d  size %d \n", nb_rec, sz_rec);
 	}
 
 	return 0;
