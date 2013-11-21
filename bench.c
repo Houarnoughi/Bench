@@ -115,7 +115,7 @@ int _create_table (sqlite3 *db, const char *tabName, unsigned int tabSize)
  
   sql = malloc (sizeof(char)*100);
   sprintf (sql,"CREATE TABLE IF NOT EXISTS %s (id INTEGER PRIMARY KEY, val VARCHAR (%u));",tabName,tabSize);
-  fprintf (stdout, "request: %s \n",sql);
+  //fprintf (stdout, "request: %s \n",sql);
   rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
   if( rc != SQLITE_OK )
   {
@@ -150,8 +150,8 @@ int _insert_into (sqlite3* db, const char *tab_name, unsigned int nb_rec, unsign
   fprintf (stdout,"Insert function begin ...! \n"); 
   fsql = fopen ("insert_sql.dat","a"); // Open file for sql requests
   fprintf (fsql,"BEGIN TRANSACTION; \n");
-  fprintf (fsql,"DELETE FROM %s;",tab_name);
-  for (i = 0; i <= nb_rec; i++)
+  //fprintf (fsql,"DELETE FROM %s;",tab_name);
+  for (i = 0; i < nb_rec; i++)
   {
 	valdata = rnd_gen (rec_size);	// Generate a random string
 	sql = malloc (sizeof(char)*(100+rec_size));
@@ -199,7 +199,7 @@ int _select_from (sqlite3* db, const char *tab_name, unsigned int nb_rec)
   fprintf (stdout,"Select function begin...! \n");
   fsql = fopen ("select_sql.dat","a"); // Open file for sql requests
   fprintf (fsql,"BEGIN TRANSACTION; \n");
-  for (i = 0; i <= nb_rec; i++)
+  for (i = 0; i < nb_rec; i++)
   {
 	sql = malloc (sizeof(char)*(100));
 	sprintf (sql, "SELECT val FROM %s WHERE id = %d;", tab_name, i); // Prepare SQL insertion request 
@@ -239,7 +239,7 @@ int _update_table (sqlite3* db, const char *tab_name, unsigned int nb_rec, unsig
   fprintf (stdout,"Update function begin ...! \n"); 
   fsql = fopen ("update_sql.dat","a"); // Open file for sql requests
   fprintf (fsql,"BEGIN TRANSACTION; \n");
-  for (i = 0; i <= nb_rec; i++)
+  for (i = 0; i < nb_rec; i++)
   {
 	valdata = rnd_gen (rec_size);	// Generate a random string
 	sql = malloc (sizeof(char)*(100+rec_size));

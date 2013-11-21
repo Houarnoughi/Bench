@@ -7,11 +7,19 @@ This is a simple application to test perfs in embedded database SQLite
 -----------------
 To cross compile bench you have to excecute the make command with a specified
 C compiler. Exemple for arm you have to use:
-'make CC=arm-gcc'
+'make CC=arm-linux-gcc'
 
 2) Usage:
 ---------
-./bench <database_file_target> <request_type> <number_of_record> <size_of_each_record>
-
+./benchdb <database_file_target> <request_type> <number_of_record> <size_of_each_record>
+ 
+ 
+ 1) Mount the test flash partition
+ 2) insert the I/O tracer in the partition flashmon.ko 
+ 3) intitialize VFS and the flashmon_log
+ 4) Execute requests
+ 
+ Exemple:
+ ./benchdb /mnt/flash insert 10 150
 
 
