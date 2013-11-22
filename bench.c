@@ -451,7 +451,7 @@ int _join_nloop (sqlite3* db,
 	{
 		stamp = ((end.tv_sec * 1000000) + end.tv_usec) -
 				((start.tv_sec * 1000000) + start.tv_usec);
-		ft = fopen ("select_time.dat", "a");
+		ft = fopen ("join_time.dat", "a");
 		fprintf (ft, "join request execution time is %f ms\n", ((float)stamp/1000));
 		fclose (ft);   
 	}
