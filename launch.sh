@@ -17,7 +17,7 @@ BDEV_PART=/dev/mtdblock"$PART_NUM"
 FMLOG=/proc/flashmon_log
 FMCMD=/proc/flashmon
 DEST=NFS/API_test
-
+MAX_REC=100
 
 if [ $# -lt 2 ];
 then
@@ -48,8 +48,14 @@ _init ()
 }
 
 # Request execution
+
+if [ $REQ_TYPE -ne insert ];
+then
+echo "Create database and insert records ..."
+./benchdb $MNT_POINT/database.db insert $MAX_REC $SZ_REC $PAT_ACC
+
+echo "Execute request ..."
 _init
-echo "Execute resuest ..."
 ./benchdb $MNT_POINT/database.db $REQ_TYPE $NB_REC $SZ_REC $PAT_ACC
 
 # Save trace (in this case it's saved in NFS file)
@@ -61,3 +67,21 @@ mv "$REQ_TYPE"_sql.dat $DEST/"$REQ_TYPE"_sql_"$NB_REC"_"SZ_REC".dat
 
 # Dumping the part
 cat $DEV_PART > $DEST/dump_"$NB_REC"_"SZ_REC".dat
+
+else
+
+echo "Execute request ..."
+_init
+./benchdb $MNT_POINT/database.db $REQ_TYPE $NB_REC $SZ_REC $PAT_ACC
+
+# Save trace (in this case it's saved in NFS file)
+cat $FMLOG > $DEST/"$REQ_TYPE"_"$NB_REC"_"$SZ_REC".dat
+
+# Save time stamping file and sql script
+mv "$REQ_TYPE"_time.dat $DEST/"$REQ_TYPE"_time_"$NB_REC"_"SZ_REC".dat
+mv "$REQ_TYPE"_sql.dat $DEST/"$REQ_TYPE"_sql_"$NB_REC"_"SZ_REC".dat
+
+# Dumping the part
+cat $DEV_PART > $DEST/dump_"$NB_REC"_"SZ_REC".dat
+
+fi
