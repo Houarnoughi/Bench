@@ -10,7 +10,7 @@
 
 int main (int argc, char* argv[])
 {
-	unsigned int nb_rec = 0, sz_rec = 0, i = 0, _max = 0;
+	unsigned int nb_rec = 0, sz_rec = 0, i = 0, _max = 0, choice = 0;
 	const char *db_name = NULL;
 	sqlite3* db = NULL;
 	
@@ -35,10 +35,21 @@ int main (int argc, char* argv[])
 	{
 		fprintf (stdout, "Total number of records for this table: ");
 		fscanf (stdin, "%d",&_max);
+		fprintf (stdout, "1) squantial \n 2) random \n");
+		fscanf (stdin, "%d", &choice);
 		db = _db_connect (db_name);
 		_create_table (db, "table_1", sz_rec);
 		_insert_into (db, "table_1", _max, sz_rec);
-		_select_from (db, "table_1", nb_rec);
+		
+		if ( choice == 1 ) 						// to choice the selection pattern
+		{
+		_select_from (db, "table_1", nb_rec, 0);// 0 for sequantial pattern
+		}
+		else
+		{
+		_select_from (db, "table_1", nb_rec, 1);// 1 for a random pattern 	
+		}
+		
 		sqlite3_close (db);
 	}
 	else if (strcmp(argv[2],"update") == 0)

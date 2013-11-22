@@ -14,7 +14,8 @@ int _insert_into (sqlite3* db,
 				  
 int _select_from (sqlite3* db,
 				  const char *tab_name,
-				  unsigned int nb_rec);
+				  unsigned int nb_rec,
+				  int type);
 				  
 int _update_table (sqlite3* db,
 				   const char *tab_name,
