@@ -1,6 +1,7 @@
 #include <sqlite3.h>
 #ifndef BENCH_H
 #define BENCH_H
+
 sqlite3* _db_connect (const char *db_name);
 
 int _create_table (sqlite3* db,

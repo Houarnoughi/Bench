@@ -289,12 +289,14 @@ int _select_from_unit (sqlite3* db,
   return 0;
 }
 
+
 /*
  * _select_from function is used to select "nb_rec" records from "tbName" 
  * table. It suppose that both database file and table exits
  * it select record one by one (a for loop with the condition key == index)
  * so it's unitary test 
  */
+
 
 int _select_from (sqlite3* db,
 				  const char *tab_name,

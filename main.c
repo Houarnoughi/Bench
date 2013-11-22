@@ -71,7 +71,6 @@ int main (int argc, char* argv[])
 		//_insert_into (db, "table_2", _MAX_REC, sz_rec);
 		_join_nloop (db, "table_1", "table_2", nb_rec); 
 		sqlite3_close (db);
-		
 	}
 	else
 	{
