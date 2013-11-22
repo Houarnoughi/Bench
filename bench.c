@@ -212,9 +212,10 @@ int _insert_into (sqlite3* db,
  * _select_from function is used to select "nb_rec" records from "tbName" 
  * table. It suppose that both database file and table exits
  * it select record one by one (a for loop with the condition key == index)
+ * so it's unitary test 
  */
 
-int _select_from (sqlite3* db,
+int _select_from_unit (sqlite3* db,
 				  const char *tab_name,
 				  unsigned int nb_rec,
 				  int type)
@@ -284,6 +285,56 @@ int _select_from (sqlite3* db,
   fclose (ft);
   
   free (sql_tab);
+  fprintf (stdout,"Select function end...! \n");
+  return 0;
+}
+
+/*
+ * _select_from function is used to select "nb_rec" records from "tbName" 
+ * table. It suppose that both database file and table exits
+ * it select record one by one (a for loop with the condition key == index)
+ * so it's unitary test 
+ */
+
+int _select_from (sqlite3* db,
+				  const char *tab_name,
+				  unsigned int nb_rec)
+{
+  char *zErrMsg = 0, *sql = NULL;
+  int  rc = 0;
+  const char* data = "Callback function called";
+  struct timeval start, end;
+  FILE *ft = NULL, *fsql = NULL; //files ft: time stamp fsql: sql requests 
+  unsigned long stamp;
+
+  fprintf (stdout,"Select function begin...! \n");
+  sql = malloc (sizeof(char)*(100));
+  fsql = fopen ("select_sql.dat","a"); // Open file for sql requests
+  fprintf (fsql,"BEGIN TRANSACTION; \n");
+  sprintf (sql, "SELECT val FROM %s WHERE id = %d;",
+				   tab_name, nb_rec); 		
+  fprintf (fsql, "%s\n", sql);
+  fprintf (fsql,"END TRANSACTION; \n");
+  fclose (fsql);
+  gettimeofday (&start, NULL);
+  rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
+  gettimeofday (&end, NULL);
+	
+	if( rc != SQLITE_OK )
+	{
+		fprintf (stderr, "Select: SQL error: %s\n", zErrMsg);
+		sqlite3_free (zErrMsg);
+	}
+	else
+	{
+		stamp = ((end.tv_sec * 1000000) + end.tv_usec) -
+						((start.tv_sec * 1000000) + start.tv_usec);   
+	}
+  
+  ft = fopen ("select_time.dat", "a");
+  fprintf (ft, "request execution time to select %d rec is is %f \n",
+		   nb_rec, ((float)stamp/1000));    
+  fclose (ft);
   fprintf (stdout,"Select function end...! \n");
   return 0;
 }
