@@ -28,15 +28,12 @@ int main (int argc, char* argv[])
 	if (strcmp(argv[2],"insert") == 0)
 	{
 		db = _db_connect (db_name);
-		_create_table (db, "table_1", sz_rec);
 		_insert_into (db, "table_1", nb_rec, sz_rec);
 		sqlite3_close (db);
 	}
 	else if (strcmp(argv[2],"select") == 0)
 	{
 		db = _db_connect (db_name);
-		//_create_table (db, "table_1", sz_rec);
-		//_insert_into (db, "table_1", _MAX_REC, sz_rec);
 		
 		if ( strcmp (argv[5],"seq") == 0 ) 						// to choice the selection pattern
 		{
@@ -57,18 +54,12 @@ int main (int argc, char* argv[])
 	else if (strcmp(argv[2],"update") == 0)
 	{
 		db = _db_connect (db_name);
-		//_create_table (db, "table_1", sz_rec);
-		//_insert_into (db, "table_1", _MAX_REC, sz_rec);
 		_update_table (db, "table_1", nb_rec, sz_rec);
 		sqlite3_close (db);
 	}
 	else if (strcmp(argv[2],"join") == 0)
 	{
 		db = _db_connect (db_name);
-		//_create_table (db, "table_1", sz_rec);
-		//_create_table (db, "table_2", sz_rec);
-		//_insert_into (db, "table_1", _MAX_REC, sz_rec);
-		//_insert_into (db, "table_2", _MAX_REC, sz_rec);
 		_join_nloop (db, "table_1", "table_2", nb_rec); 
 		sqlite3_close (db);
 	}

@@ -7,7 +7,10 @@
 CC=
 CFLAGS=-c -g -Wall
 LDFLAGS=-l sqlite3 
-all: benchdb
+all: benchdb tab_create
+
+tab_create: bench.o
+	$(CC) tab_create.c bench.o $(LDFLAGS) -o tab_create
 
 benchdb: bench.o
 	$(CC) main.c bench.o $(LDFLAGS) -o benchdb
@@ -17,4 +20,4 @@ bench.o: bench.c bench.h
 
 .PHONY: clean
 clean:
-	rm -rf *.o benchdb *.dat *.db
+	rm -rf *.o benchdb tab_create *.dat *.db

@@ -130,14 +130,15 @@ int _create_table (sqlite3 *db,
   {
 	fprintf (stderr, "SQL error: %s\n", zErrMsg);
 	sqlite3_free (zErrMsg);
+	return rc;
    }
    else
    {
 	fprintf (stdout, "Table created successfully\n");
+    free (sql);
+    return 0;
    }
    
-   free (sql);
-   return 0;
 }
 
 /*
