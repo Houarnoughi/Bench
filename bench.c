@@ -200,10 +200,10 @@ int _insert_into (sqlite3* db,
   }
   
   ft = fopen ("insert_time.dat", "a");
+  fprintf (ft,"query;time\n");
   for ( i = 0; i < nb_rec+2; i++)
   {		
-	fprintf (ft, "request execution time %d is %f \n",i,
-			((float)stamp_tab[i]/1000));
+	fprintf (ft, "%d; %f \n",i,((float)stamp_tab[i]/1000));
   } 
   fclose (ft);
   
@@ -286,9 +286,10 @@ int _select_from_unit (sqlite3* db,
   }
   
   ft = fopen ("select_time.dat", "a");
+  fprintf (ft,"query;time\n");
   for ( i = 0; i < nb_rec+2; i++)
   {	
-	fprintf (ft, "request execution time %d is %f \n", i, ((float)stamp_tab[i]/1000));   
+	fprintf (ft, "%d; %f\n", i, ((float)stamp_tab[i]/1000));   
   } 
   fclose (ft);
   
@@ -400,10 +401,10 @@ int _update_table (sqlite3* db,
   }
   
   ft = fopen ("update_time.dat", "a");		
-  
+  fprintf (ft,"query; time\n");
   for (i = 0; i < nb_rec+2; i++)
   {
-	fprintf (ft, "request execution time %d is %f ms \n", i, ((float)stamp_tab[i]/1000)); //save time stamp
+	fprintf (ft, "%d; %f\n", i, ((float)stamp_tab[i]/1000)); //save time stamp
   }
   
   fclose (ft);

@@ -16,7 +16,7 @@ DEV_PART=/dev/mtd"$PART_NUM"
 BDEV_PART=/dev/mtdblock"$PART_NUM"
 FMLOG=/proc/flashmon_log
 FMCMD=/proc/flashmon
-DEST=NFS/API_test
+DEST=NFS/API_test/jffs2
 MAX_REC=6000
 
 if [ $# -lt 2 ];
@@ -28,6 +28,7 @@ fi
 # Prepare the test environnement 
 _prepare ()
 {
+	echo "Prepare function ..."
 	# Erase flash
 	flash_erase $DEV_PART 0 0 > /dev/null
 	
@@ -42,6 +43,7 @@ _prepare ()
 _init ()
 {
 	# Flush the page cache
+	echo "Init function ..."
 	sync
 	echo 3 > /proc/sys/vm/drop_caches
 	echo reset > $FMCMD
@@ -54,7 +56,7 @@ _prepare
 if [[ "$REQ_TYPE" != "insert" ]];
 then
 
-	if [[ "$REQ_TYPE" != "join" ]];
+	if [[ "$REQ_TYPE" == "join" ]];
 	then
 	echo "Create database and insert records ..."
 	./tab_create $MNT_POINT/database.db table_1 $SZ_REC
@@ -81,9 +83,12 @@ then
 	mv "$REQ_TYPE"_time.dat $DEST/$REQ_TYPE/"$REQ_TYPE"_time_"$i"_"$SZ_REC".dat
 	done
 
-	# Remoce tracer
+	# Remove tracer
 	rmmod flashmon.ko
-
+	
+	# Remove database
+	rm $MNT_POINT/database.db
+	
 	# unmout parition 
 	umount $MNT_POINT
 	
@@ -116,6 +121,9 @@ done
 # Remoce tracer
 rmmod flashmon.ko
 
+# Remove database
+rm $MNT_POINT/database.db
+
 # unmout parition 
 umount $MNT_POINT
 
@@ -123,12 +131,14 @@ else
 
 for i in 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400 2500 2600 2700 2800 2900 3000 3100 3200 3300 3400 3500 3600 3700 3800 3900 4000 4100 4200 4300 4400 4500 4600 4700 4800 4900 5000
 do	
-	echo "Execute insert request ..."
+	echo "Creating table"
 	./tab_create $MNT_POINT/database.db table_1 $SZ_REC
 	_init
+	
+	echo "Insert request"
 	./benchdb $MNT_POINT/database.db $REQ_TYPE table_1 $i $SZ_REC $PAT_ACC
 
-	sleep 2
+
 	# Save trace (in this case it's saved in NFS file)
 	cat $FMLOG > $DEST/$REQ_TYPE/"$REQ_TYPE"_"$i"_"$SZ_REC".dat
 
@@ -138,20 +148,15 @@ do
 	# Dumping the part
 	cat $DEV_PART > $DEST/$REQ_TYPE/dump_"$i"_"$SZ_REC".dat
 
-	# Extarct csv file from duped part
-	jffs2dump -c $DEST/$REQ_TYPE/dump_"$i"_"$SZ_REC".dat > $DEST/$REQ_TYPE/dump_"$i"_"$SZ_REC".csv
-
-	
 	# Remove database file
 	rm $MNT_POINT/database.db
-	# Remove dumping file
-	#rm $DEST/$REQ_TYPE/dump_"$i"_"$SZ_REC".dat
 	
-
 	# Remoce tracer
-	#rmmod flashmon.ko
+	# rmmod flashmon.ko
 
 	# unmout parition 
-	#umount $MNT_POINT
+	# umount $MNT_POINT
+	
+	sleep 10
 done
 fi
