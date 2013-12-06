@@ -12,7 +12,7 @@ for i in 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 
 do
 	if [ -e "$1"_time_"$i"_"$2".dat ];
 	then
-		echo "$i;`awk -F \";\" 'BEGIN {SUM = 0}{SUM += $2} END {print SUM}' "$1"_time_"$i"_"$2".dat`" >> "$1"_"$2"_total_time.dat
+		echo "$i;`awk -F \";\" 'BEGIN {SUM = 0}{SUM += $2} END {print SUM}' "$1"_time_"$i"_"$2".dat`" >> "$1"_"$2"_total_time.csv
 	else
 		echo "Missing file: "$1"_time_"$i"_"$2".dat"
 	fi

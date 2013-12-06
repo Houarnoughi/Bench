@@ -40,12 +40,12 @@ int main (int argc, char* argv[])
 		if ( strcmp (argv[6],"seq") == 0 ) 						// to choice the selection pattern
 		{
 			fprintf (stdout, "Sequantial pattern...! \n");
-			_select_from_unit (db, "table_1", nb_rec, 0);		// 0 for sequantial pattern
+			_select_from_unit (db, tab_name, nb_rec, 0);		// 0 for sequantial pattern
 		}
 		else if ( strcmp (argv[6],"rand") == 0 )
 		{
 			fprintf (stdout, "Random pattern...! \n");
-			_select_from_unit (db, "table_1", nb_rec, 1);		// 1 for a random pattern 	
+			_select_from_unit (db, tab_name, nb_rec, 1);		// 1 for a random pattern 	
 		}
 		else
 		{
@@ -56,7 +56,7 @@ int main (int argc, char* argv[])
 	else if (strcmp(argv[2],"update") == 0)
 	{
 		db = _db_connect (db_name);
-		_update_table (db, "table_1", nb_rec, sz_rec);
+		_update_table (db, tab_name, nb_rec, sz_rec);
 		sqlite3_close (db);
 	}
 	else if (strcmp(argv[2],"join") == 0)
