@@ -26,7 +26,7 @@ Begin
 	for each Query qi of Q do
 		_init()
 		execute (qi)
-		save time_stamp_Qi
-		save I/O_trace_Qi
+		save time_stamp_qi
+		save I/O_trace_qi
 	endfor
 end
