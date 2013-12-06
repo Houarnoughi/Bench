@@ -1,0 +1,32 @@
+_prepare_Env()
+	{
+	- Format Partition
+	- Mount Partition with FS
+	- Insert flash I/O tracer module for this part
+	}
+
+_init()
+	{
+	- Empty all system caches (VFS)
+	- Initialize I/O tracer
+	}
+
+_query_list (Input: queuy_type type_q, average_record_size sz_rec, number_of_records nb_rec,
+			 Output: query_list Q )
+	{
+	for i=0 to nb_rec do
+		generate_SQLite_Query (i,sz_rec)
+	endfor
+	}
+
+Begin
+	_prepare_Env()
+	Create Database file and schema
+	
+	for each Query qi of Q do
+		_init()
+		execute (qi)
+		save time_stamp_Qi
+		save I/O_trace_Qi
+	endfor
+end
