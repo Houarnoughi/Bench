@@ -4,7 +4,7 @@
 #	e-mail: h.ouarnoughi@gmail.com
 #_____________________________________________
 
-CC=
+CC=arm-linux-gcc
 CFLAGS=-c -g -Wall
 LDFLAGS=-l sqlite3 
 all: benchdb tab_create

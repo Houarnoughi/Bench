@@ -359,7 +359,7 @@ int _update_table (sqlite3* db,
   }
   
   sql_tab[nb_rec+1] = malloc (sizeof(char)*100);
-  sprintf (sql_tab[0], "END TRANSACTION;");
+  sprintf (sql_tab[nb_rec+1],"END TRANSACTION;");
   
   for (i = 0; i < nb_rec+2; i++)
   {
