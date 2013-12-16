@@ -40,7 +40,8 @@ int main (int argc, char* argv[])
 		if ( strcmp (argv[6],"seq") == 0 ) 						// to choice the selection pattern
 		{
 			fprintf (stdout, "Sequantial pattern...! \n");
-			_select_from_unit (db, tab_name, nb_rec, 0);		// 0 for sequantial pattern
+			_select_from_unit (db, tab_name, nb_rec, 0);
+			//_select_from (db, tab_name, nb_rec);		// 0 for sequantial pattern
 		}
 		else if ( strcmp (argv[6],"rand") == 0 )
 		{
