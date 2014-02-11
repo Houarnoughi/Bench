@@ -43,7 +43,7 @@ char* rnd_gen (unsigned int length)
 	const char charlist[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";        
     int i = 0, key = 0;
 	char *dest = NULL;
-	
+
     if (length != 0) 
     {
 		dest = malloc(sizeof(char) * (length +1));            
@@ -86,7 +86,7 @@ sqlite3* _db_connect (const char *dbName)
 	fprintf (stderr, "SQL error or missing database \n");
 	fprintf (stderr, "Do you want to create a new database? [Y/N]: ");
 	fscanf (stdin, "%c",&rsp);
-	
+
 	if ( rsp == 'Y' || rsp == 'y' ) 											
 	{
 		dbfile = fopen ( dbName, "w");											
@@ -180,8 +180,9 @@ int _insert_into (sqlite3* db,
   {
 	gettimeofday (&start, NULL);													
 	rc = sqlite3_exec(db, sql_tab[i], callback, 0, &zErrMsg);						
-	gettimeofday (&end, NULL);														
-	
+	gettimeofday (&end, NULL);
+	system ("echo marker > /proc/flashmon_log");														
+
 	if( rc != SQLITE_OK )															
 	{
 		fprintf (stderr, "Insert: SQL error: %s\n", zErrMsg);
@@ -250,7 +251,7 @@ int _select_from_unit (sqlite3* db,
 		  sprintf (sql_tab[i], "SELECT val FROM %s WHERE id = %d;",
 				   tab_name, rnd);
 	  }
-	  
+
   }
   sql_tab[nb_rec+1] = malloc (sizeof(char)*(100));
   sprintf (sql_tab[nb_rec+1],"END TRANSACTION;");
@@ -260,7 +261,8 @@ int _select_from_unit (sqlite3* db,
 	gettimeofday (&start, NULL);
 	rc = sqlite3_exec(db, sql_tab[i], callback, (void*)data, &zErrMsg);
 	gettimeofday (&end, NULL);
-	
+	system ("echo marker > /proc/flashmon_log");
+
 	if( rc != SQLITE_OK )
 	{
 		fprintf (stderr, "Select: SQL error: %s\n", zErrMsg);
@@ -271,7 +273,7 @@ int _select_from_unit (sqlite3* db,
 		stamp_tab[i] = ((end.tv_sec * 1000000) + end.tv_usec) -
 						((start.tv_sec * 1000000) + start.tv_usec);   
 	}
-	
+
   }
   
   ft = fopen ("select_time.dat", "a");
@@ -309,11 +311,12 @@ int _select_from (sqlite3* db,
 
   fprintf (stdout,"Select function begin...! \n");
   sql = malloc (sizeof(char)*(100));
-  sprintf (sql, "SELECT val FROM %s WHERE id = %d;",tab_name, nb_rec); 		
+  sprintf (sql, "SELECT val FROM %s WHERE id <= %d;",tab_name, nb_rec); 		
+  
   gettimeofday (&start, NULL);
   rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
   gettimeofday (&end, NULL);
-	
+
 	if( rc != SQLITE_OK )
 	{
 		fprintf (stderr, "Select: SQL error: %s\n", zErrMsg);
@@ -359,14 +362,15 @@ int _update_table (sqlite3* db,
   }
   
   sql_tab[nb_rec+1] = malloc (sizeof(char)*100);
-  sprintf (sql_tab[nb_rec+1],"END TRANSACTION;");
+  sprintf (sql_tab[nb_rec+1], "END TRANSACTION;");
   
   for (i = 0; i < nb_rec+2; i++)
   {
 	gettimeofday (&start, NULL);	
 	rc = sqlite3_exec(db, sql_tab[i], callback, 0, &zErrMsg);
 	gettimeofday (&end, NULL);		
-	
+	system ("echo marker > /proc/flashmon_log");
+
 	if( rc != SQLITE_OK )
 	{
 		fprintf (stderr, "Update: SQL error: %s\n", zErrMsg);
@@ -377,7 +381,7 @@ int _update_table (sqlite3* db,
 		stamp_tab[i] = ((end.tv_sec * 1000000) + end.tv_usec) -
 					   ((start.tv_sec * 1000000) + start.tv_usec);   
 	}
-	
+
   }
   
   ft = fopen ("update_time.dat", "a");		
@@ -427,7 +431,7 @@ int _join_nloop (sqlite3* db,
 	gettimeofday (&start, NULL);
 	rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
 	gettimeofday (&end, NULL);
-	
+
 	if( rc != SQLITE_OK )
 	{
 		fprintf (stderr, "Join: SQL error: %s\n", zErrMsg);
