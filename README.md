@@ -1,4 +1,4 @@
-Bench
+SQLite Bench
 =====
 
-Micro benchmark for SQLite
+Micro benchmark for SQLite Databases.
